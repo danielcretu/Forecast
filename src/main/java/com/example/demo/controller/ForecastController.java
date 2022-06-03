@@ -37,10 +37,12 @@ public class ForecastController {
     }
 
     @PutMapping("/updateForecast/{id}")
-    public Forecast updateForecast(@PathVariable int id, @RequestBody Forecast forecast){
-        Forecast oldForecast = forecastService.getById(id);
-        forecast.setId(oldForecast.getId());
-        return forecastService.addForecast(forecast);
+    public ResponseEntity<Forecast> updateForecast(@PathVariable int id, @RequestBody Forecast forecast){
+        if (forecastService.checkIfExists(id)){
+            forecastService.updateForecast(id, forecast);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("/deleteForecast/{id}")
